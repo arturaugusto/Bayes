@@ -1,89 +1,114 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title></title>
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <title></title>
+  </head>
+  <body>
+    <div id="app" class="">
+      <section class="section">
+        <div class="container">
+          <h1 class="title">
+            Bayes
+          </h1>
+          <p class="subtitle is-size-7">
+            <strong>Treine e utilize redes bayesianas para classificar sons.</strong>
+          </p>
+          
+          <div class="columns">
+            <div class="column is-narrow">
 
-<script type="text/javascript">
+              <!-- lista de cargas -->
+              
+              <div v-if="!waves.length">Nenhuma carga</div>
+              <!-- <div v-if="waves.length" class="title is-6">Cargas:</div> -->
+              <table class="table is-striped" v-if="waves.length">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="load in waves">
+                    <td>{{load.name}}</td>
+                    <td>
+                      <div class="field">
+                        <div class="control">
+                          <label class="checkbox">
+                            <input type="checkbox" v-model="load.isOn"> {{load.isOn ? 'on' : 'off'}}
+                          </label>
+                        </div>
+                      </div>
+                    </td>
 
-const msd = (arr) => {
-  const n = arr.length
-  m = arr.reduce((a, b) => a + b) / n
-  return {m: m, s: Math.sqrt(arr.map(x => Math.pow(x - m, 2)).reduce((a, b) => a + b) / n)}
-}
 
-const argMax = arr => [].map.call(arr, (x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1]
+                  </tr>
 
-/*
-Dados inventados para teste.
-col0: a com desvio pequeno e b com desvio grande. As médias são parecidas.
-col1: a com desvio grande e b com desvio pequeno. As médias são parecidas.
-col2: a e b com desvio parecido e média parecida.
-col3: a com desvio e média ligeiramente inferior.
-*/
+                </tbody>
+              </table>
 
-let data = [
-// col0 col1 col2 col3
-  [0.2, 1.6, 8.0, 3.0, 'a'],
-  [0.1, 1.5, 7.0, 4.0, 'a'],
-  [0.2, 1.6, 8.0, 3.0, 'a'],  
-  [0.1, 1.5, 7.0, 4.0, 'a'],
-  [0.2, 1.6, 8.0, 3.0, 'a'],
-  [0.4, 1.1, 7.0, 6.0, 'b'],
-  [0.6, 1.2, 8.0, 7.0, 'b'],
-  [0.4, 1.1, 7.0, 6.0, 'b'],
-  [0.4, 1.1, 7.0, 6.0, 'b'],
-  [0.6, 1.3, 8.0, 7.0, 'b']
-]
+              
+            </div>
+            <div class="column">
+              <!-- adiciona cargas -->
+              
+              <div class="field">
+                <div class="control">
+                  <input class="input" type="text" v-model="newName" placeholder="nome da carga">
+                </div>
+              </div>
 
-// separa grupos
-let grupoA = data.filter(item => item[4] === 'a').map(item => item.slice(0, 4))
-let grupoB = data.filter(item => item[4] === 'b').map(item => item.slice(0, 4))
+              <div class="field">
+                <div class="control">
+                  <a class="button is-link" @click="newLoad">adicionar som</a>
+                </div>
+              </div>
 
-// calcula parâmetros para as colunas dos grupos
-let grupoACalc = grupoA[0].map((_, i) => {
-  let col = grupoA.map(item => item[i])
-  return msd(col)
-})
-let grupoBCalc = grupoB[0].map((_, i) => {
-  let col = grupoB.map(item => item[i])
-  return msd(col)
-})
+              <hr>
 
-// vamos utilizar o modelo para descrobrio a qual grupo este array pertence
-//const teste = [0.15, 1.54, 7.2, 3.1]; // é a
-const teste =  [.2, 1.4, 7.5, 3.]; // é b
+              <!-- fotografa estado -->
 
-const scores = [[grupoA, grupoACalc], [grupoB, grupoBCalc]].map(grupoArr => {
-  // cria atalhos para o grupo de dados e os calculos
-  const gupoX = grupoArr[0] 
-  const gupoCalc = grupoArr[1] 
-  
-  // chute inicial
-  let priorProbability = gupoX.length/data.length
-  
-  // obtem probabilidade dos dados de entrada pertencer ao grupo atual
-  let p = teste.reduce((a, x, i) => {
-    let std = gupoCalc[i].s
-    let mean = gupoCalc[i].m
-    // pega likelihood da distribuição normal. 
-    // O calculo da pdf foi roubado de:
-    // https://github.com/jstat/jstat/blob/1.x/src/distribution.js#L523
-    let L = Math.exp(-0.5 * Math.log(2 * Math.PI) -
-                    Math.log(std) - Math.pow(x - mean, 2) / (2 * std * std))
-    
-    // calcula o log e soma para evitar underflow
-    return a + Math.log(L)
-  }, Math.log(priorProbability))
-  return p
-})
+              <div class="field" v-if="waves.length">
+                <div class="control">
+                  <a v-if="savedStates.length > 1" class="button is-primary" @click="train">treinar</a>
+                </div>
 
-console.log(scores)
+                <div v-if="trainedLabels && detectedIndex !== undefined">
+                  <h3>
+                    Detectado: {{ detected }}
+                  </h3>
+                </div>
 
-const maxIndex = argMax(scores)
-console.log(maxIndex)
+                <p>
+                  estados para treinamento: {{savedStates.length}}
+                </p>
+              </div>
 
-</script>
-</body>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+
+      <div>
+        <canvas ref="spectrum" width="200" height="60"></canvas>
+      </div>
+
+
+    </div>
+
+    <div class="wrapper">
+      <canvas class="visualizer" width="640" height="100"></canvas>
+    </div>
+
+
+
+
+  </body>
+  <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="audio.js"></script>
+  <script type="text/javascript" src="bayes.js"></script>
 </html>
