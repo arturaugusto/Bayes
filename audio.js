@@ -90,7 +90,7 @@ function initAudio() {
     var WIDTH = canvas.width;
     var HEIGHT = canvas.height;
 
-    analyser.fftSize = 256;
+    analyser.fftSize = 512;
     var bufferLengthAlt = analyser.frequencyBinCount;
     
     var dataArrayAlt = new Uint8Array(bufferLengthAlt);
@@ -116,14 +116,18 @@ function initAudio() {
       var barHeight;
       var x = 0;
 
-      for(var i = 0; i < bufferLengthAlt; i++) {
-        barHeight = dataArrayAlt[i];
 
-        canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-        canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
-
-        x += barWidth + 1;
-      }
+      var dataArrayAlt2 = Array.from(dataArrayAlt).slice(0, 256)
+      
+      var lags = dataArrayAlt2.reduce((a, c, i, l) => {
+        //const n = 5
+        //if (i >= n) {
+        if (i) {
+          //a.push(Math.abs((c - l[i-1]) - (l[i-1] - l[i-2]) - (l[i-2] - l[i-3]) - (l[i-3] - l[i-4]) - (l[i-4] - l[i-5]))) / i
+          a.push(Math.abs(c - l[i-1]))
+        }
+        return a
+      }, dataArrayAlt2)
 
       // compute exponential average
       fea = fea * (1 - 0.8) + dataArrayAlt.reduce((a, c) => a + c / 2, 0) * 0.8
@@ -139,37 +143,46 @@ function initAudio() {
           startAtack = true
         }
         
+        // normalize
+        const lagMax = Math.max.apply(0, lags)
+        lags = lags.map(item => item/lagMax)
+
         if (fea < sea && startAtack) {
           atack = true
           //console.log('atack!')
           
           let wavesOn = app.$data.waves.filter(w => w.isOn)
           
-          let lags = Array.from(dataArrayAlt).reduce((a, c, i, l) => {
-            if (i) {
-              a.push(Math.abs(c - l[i-1]))
-            }
-            return a
-          }, [])
-          
           if (wavesOn.length) {
             let label = wavesOn.map(item => item.name).toString()
             
 
-            //DATA.push([label, Array.from(dataArrayAlt)])
             DATA.push([label, lags])
+
             console.log(label)
           } else {
             // Se tem dados treinados, inferir no modelo
-            if (window.B) {
+            if (window.MODEL) {
               //BINDEX.val = window.B(dataArrayAlt)
-              BINDEX.val = window.B(lags)
+              BINDEX.val = predictBayes(lags, window.MODEL)
               
             }
           }
           startAtack = false
         }
       }
+
+      // plot
+      for(var i = 0; i < bufferLengthAlt; i++) {
+        barHeight = dataArrayAlt[i];
+
+        canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+        canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
+
+        x += barWidth + 1;
+      }
+
+
     };
 
     drawAlt();
