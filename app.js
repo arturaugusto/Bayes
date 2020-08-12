@@ -3,6 +3,9 @@ var DATA = {val: []};
 var BINDEX = {val: undefined}
 var MODEL = undefined
 
+// função `histogram` roubada do jstat
+// https://github.com/jstat
+// adaptada para receber min e max
 const histogram = function (arr, min, max, binCnt) {
   binCnt = binCnt || 4;
   var first = min;
@@ -70,6 +73,19 @@ var app = new Vue({
             }, {
               display: true,
             }]
+          },
+          tooltips: {
+            callbacks: {
+              label: function(tooltipItem, data) {
+                var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                if (label) {
+                  label += ': ';
+                }
+                label += Math.round(tooltipItem.yLabel * 10000) / 10000;
+                return label;
+              }
+            }
           }
         }
       });
@@ -116,7 +132,7 @@ var app = new Vue({
           .sort((a, b) => a[0] - b[0])
           .map(item => item[1])
 
-        let chunkSize = ~~(parsedData.length / 4)
+        let chunkSize = Math.ceil(parsedData.length / 4)
         var chuks = []
         for (var i = 0; i < 4; i++) {
           chuks.push(parsedData.slice(i*chunkSize, (i+1)*chunkSize))
@@ -148,21 +164,21 @@ var app = new Vue({
     },
     loadSampleTable () {
       this.txtData = `label;comprimento; doçura
-maça;5;6
-maça;4;3
-maça;5;4
-maça;5;2
-maça;5;6
-maça;3;3
-maça;3;1
-maça;3;2.3
-maça;3;5
-maça;5;6
-maça;3;3.6
-maça;4;3
-maça;4;3
-maça;4;2.5
-maça;5;4
+maçã;5;6
+maçã;4;3
+maçã;5;4
+maçã;5;2
+maçã;5;6
+maçã;3;3
+maçã;3;1
+maçã;3;2.3
+maçã;3;5
+maçã;5;6
+maçã;3;3.6
+maçã;4;3
+maçã;4;3
+maçã;4;2.5
+maçã;5;4
 banana;8;7
 banana;5;6
 banana;6;6
