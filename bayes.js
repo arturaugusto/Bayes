@@ -14,8 +14,8 @@ const fitBayes = function(groups) {
   // calcula parâmetros para as colunas dos grupos
   return groups.map(matrix => {
     let calc = matrix[0].map((_, i) => {
-      let col = matrix.map(item => item[i])
-      return rowCalc(col)
+      let row = matrix.map(item => item[i])
+      return rowCalc(row)
     })
     return {priorProbability: matrix.length/dataLen, calc: calc}
   })
@@ -47,7 +47,7 @@ const predictBayes = function(arrIn, model) {
     }, Math.log(groupObj.priorProbability))
     return p
   })
-  console.log(scores)
+  //console.log(scores)
   return argMax(scores)
 }
 

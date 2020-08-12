@@ -2,113 +2,209 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <title></title>
   </head>
   <body>
-    <div id="app" class="">
+    <div id="app" class="is-hidden">
       <section class="section">
         <div class="container">
           <h1 class="title">
-            Bayes
+            Classificador Naive Bayes
           </h1>
           <p class="subtitle is-size-7">
-            <strong>Treine e utilize redes bayesianas para classificar sons.</strong>
+            <strong>Classificação utilizando Gaussian Naive Bayes</strong>
           </p>
-          
-          <div class="columns">
-            <div class="column is-narrow">
-
-              <!-- lista de cargas -->
-              
-              <div v-if="!waves.length">Nenhuma carga</div>
-              <!-- <div v-if="waves.length" class="title is-6">Cargas:</div> -->
-              <table class="table is-striped" v-if="waves.length">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Situação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="load in waves">
-                    <td>{{load.name}}</td>
-                    <td>
-                      <div class="field">
-                        <div class="control">
-                          <label class="checkbox">
-                            <input type="checkbox" v-model="load.isOn"> {{load.isOn ? 'on' : 'off'}}
-                          </label>
-                        </div>
-                      </div>
-                    </td>
 
 
-                  </tr>
-
-                </tbody>
-              </table>
-
-              
+          <div class="columns" v-if="!type">
+            <div class="column">
+              <div class="field">
+                <div class="control">
+                  <a class="button is-primary is-outlined is-fullwidth is-large" @click="type = 'table'">Tabela
+                  </a>
+                  <h2 class="subtitle">Criar classificação com base em dados fornecidos em formato de tabela.</h2>
+                </div>
+              </div>
             </div>
             <div class="column">
-              <!-- adiciona cargas -->
-              
               <div class="field">
                 <div class="control">
-                  <input class="input" type="text" v-model="newName" placeholder="nome da carga">
+                  <a class="button is-danger is-outlined is-fullwidth is-large" @click="type = 'audio'">Áudio</a>
+                  <h2 class="subtitle">Treinar e inferir amostras de áudio em tempo real utilizando o microfone.</h2>
                 </div>
               </div>
-
-              <div class="field">
-                <div class="control">
-                  <a class="button is-link" @click="newLoad">adicionar som</a>
-                </div>
-              </div>
-
-              <hr>
-
-              <!-- fotografa estado -->
-
-              <div class="field" v-if="waves.length">
-                <div class="control">
-                  <a v-if="savedStates.length > 1" class="button is-primary" @click="train">treinar</a>
-                </div>
-
-                <div v-if="trainedLabels && detectedIndex !== undefined">
-                  <h3>
-                    Detectado: {{ detected }}
-                  </h3>
-                </div>
-
-                <p>
-                  estados para treinamento: {{savedStates.length}}
-                </p>
-              </div>
-
             </div>
           </div>
 
 
+
+
+          
+          <div v-if="type === 'audio'">
+            <div class="">
+              <!-- adiciona cargas -->
+              
+              <div class="field">
+                <div class="control">
+                  <input class="input" type="text" v-model="newName" placeholder="nome da classe">
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="control">
+                  <a class="button is-link" @click="newLoad">adicionar classe</a>
+                </div>
+              </div>
+              
+              <span v-if="trainedLabels" class="tag is-info is-light is-large">Utilize o microfone para testar</span><br>
+
+              <br>
+
+            </div>
+
+            <div class="">
+
+              <!-- lista de cargas -->
+              
+              <div v-if="!labels.length">Nenhuma classe</div>
+
+              <div class="columns" v-if="labels.length">
+                <div class="column is-narrow is-danger" v-for="(label, i) in labels" v-bind:class="{'notification': trainedLabels && detected === label}">
+                  <strong>{{label}}</strong>&nbsp;
+                  <a href="#" class="is-small has-text-danger" @click="removeAudioData(label)">&times;</a>
+                  <div class="field">
+                    <div class="control">
+                      <label class="radio">
+                        <input type="radio" v-model="loadOn" :value="label"> Treinar
+                      </label>
+                    </div>
+                  </div>
+                  <div v-for="(arr, j) in tData[i]" v-bind:class="{'_has-background-white-ter': j % 2, '_has-background-white-bis': !(j % 2)}" style="min-width: 100px;max-width: 200px;">
+                    <figure class="image">
+                      <svg viewBox="0 0 2.5 0.5" xmlns="http://www.w3.org/2000/svg">
+                        <rect v-for="(x, k) in arr.slice(0,10)" :y="x*0.5" :x="k*0.21" width="0.18" :height="(1-x)*0.5" />
+                      </svg>
+                    </figure>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+
+            <div class="field" v-if="loadOn">
+              <div class="control">
+                <a class="button is-link is-danger is-small" @click="loadOn = undefined">Parar treinamento</a>
+              </div>
+            </div>
+            
+          </div>
+
+          <div v-if="type === 'table'">
+
+            <h3 class="title is-5">Dados</h3>
+
+            <textarea v-model="txtData" class="textarea" placeholder='Inserir valores separados por ";".
+A primeira coluna define a classe dos dados e a primeira linha os "features" de cada coluna.'>
+            </textarea>
+            <br>
+            <div class="control">
+              <a v-if="!txtData || !txtData.length" class="button is-link is-small" @click="loadSampleTable">Carregar conjunto de dados de exemplo</a>
+            </div>
+
+
+            <!-- {{tData}} -->
+          </div>
+
+
+          <br>
+
+
+          <div class="field" v-if="labels.length && type">
+            <div class="control">
+              <a v-if="savedStates.val.length > 1" class="button is-primary is-large" @click="train">Criar modelo</a>
+            </div>
+            
+            <!-- <p>
+              estados para treinamento: {{savedStates.length}}
+            </p> -->
+          
+          </div>
+          
+          <div v-if="trainedLabels && type === 'table'">
+
+            <div v-if="crossValidation">
+              <hr>
+              <h3 class="title is-5">Validação cruzada</h3>
+
+
+              <table class="table is-striped">
+                <thead>
+                  <tr>
+                    <th>Erros</th>
+                    <th>N</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in crossValidation">
+                    <td v-for="val in item">{{val}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- {{ crossValidation }} -->
+              
+            </div>
+
+            <hr>
+            <h3 class="title is-5">Histogramas</h3>
+            <div class="field">
+              <div class="control">
+                <div class="select is-primary">
+                  <select v-model="selHistFeatureIndex">
+                    <option disabled value="">Escolha um feature</option>
+                    <option v-for="(feature, i) in features" v-bind:value="i">
+                      {{feature}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <canvas ref="hist"></canvas>
+            <!-- {{histograms}} -->
+            
+            <hr>
+            <h3 class="title is-5">Inferir</h3>
+            <div class="field" v-for="(feature, i) in features">
+              
+              <div class="">
+                <label class="label">{{feature}}</label>
+              </div>
+
+              <div class="control">
+                <input style="width: 180px;" class="input" type="number" v-model="dataIn[i]" :placeholder="feature">
+              </div>
+            </div>
+
+            <span v-if="resultInfer" class="tag is-info is-light is-large"><span>Identificado como: &nbsp;</span> <b>{{ resultInfer }}</b></span>
+            <span v-if="!resultInfer" class="tag is-info is-light is-large">Informe valores para testar</span>
+            <br>
+            <br>
+          </div>
+
         </div>
+
       </section>
-
-      <div>
-        <canvas ref="spectrum" width="200" height="60"></canvas>
-      </div>
-
-
     </div>
 
     <div class="wrapper">
       <canvas class="visualizer" width="640" height="100"></canvas>
     </div>
 
-
-
-
   </body>
-  <script type="text/javascript" src="app.js"></script>
-  <script type="text/javascript" src="audio.js"></script>
   <script type="text/javascript" src="bayes.js"></script>
+  <script type="text/javascript" src="audio.js"></script>
+  <script type="text/javascript" src="app.js"></script>
 </html>

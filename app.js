@@ -1,47 +1,296 @@
-var DATA = []
-//var DATA = [["Carga A",[207,214,200,183,184,166,154,146,150,140,111,113,106,110,138,140,122,118,112,101,89,86,96,104,103,100,92,84,72,92,94,91,91,85,74,67,65,58,50,40,49,53,38,30,50,58,69,83,90,88,80,73,67,69,68,64,64,64,53,37,47,46,42,40,49,56,49,47,36,33,29,30,40,52,58,69,70,56,43,49,49,49,42,26,31,20,30,37,21,23,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[195,210,198,181,178,161,150,156,148,125,117,125,123,116,113,101,105,106,93,72,76,71,73,83,93,92,76,75,67,81,90,87,72,62,64,68,69,63,55,42,44,42,37,35,39,43,52,61,65,68,53,36,39,43,49,58,54,51,49,42,30,20,35,46,45,32,30,37,31,30,40,45,44,43,32,43,56,61,64,61,45,34,33,29,40,43,45,39,20,15,16,11,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[199,210,199,184,171,159,151,152,152,133,102,105,111,128,144,142,121,111,97,84,89,88,77,91,100,99,97,89,87,83,94,92,89,93,95,94,96,89,74,45,36,48,39,33,46,47,59,66,59,68,66,63,52,53,57,55,60,57,43,36,36,34,27,35,31,22,24,28,22,23,34,33,42,41,37,39,41,55,52,37,32,30,27,27,32,22,25,26,9,0,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[200,205,193,182,172,144,154,164,157,139,128,148,145,141,135,127,124,125,106,92,91,90,99,116,116,107,105,105,79,87,98,109,108,102,91,89,89,83,71,57,54,58,52,53,59,61,79,92,92,91,84,76,72,61,65,67,62,56,57,55,42,42,37,37,30,34,40,29,23,39,44,33,31,33,18,53,62,50,62,61,45,29,36,32,33,24,32,36,17,7,14,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[199,205,191,176,166,137,132,150,148,123,117,121,117,117,125,112,106,101,98,86,74,73,88,95,88,84,93,91,79,67,81,87,80,69,50,56,67,60,46,35,26,31,32,31,28,25,41,51,57,55,55,50,35,38,33,23,33,28,10,5,8,7,1,0,11,20,15,13,8,7,10,7,11,13,14,15,21,7,21,15,6,8,1,3,11,11,20,14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[194,210,199,179,167,145,139,140,144,139,104,118,112,129,128,122,117,114,110,104,96,81,99,111,106,100,88,78,85,92,95,88,73,76,70,75,76,58,57,50,42,37,30,32,36,40,54,62,68,70,57,50,51,40,46,51,46,34,33,40,45,33,25,30,24,26,28,27,25,36,41,36,35,31,22,36,51,56,56,47,26,7,19,29,27,9,21,26,8,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[197,200,186,178,179,167,150,158,158,142,120,141,141,127,138,138,136,134,123,103,87,92,110,116,114,110,117,122,116,105,96,104,112,114,103,94,97,96,88,71,62,67,57,53,62,67,78,90,99,102,93,83,72,70,63,64,68,67,55,61,55,54,49,58,64,62,49,46,44,60,69,58,44,45,48,55,63,62,63,58,44,34,25,27,30,23,31,26,12,9,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga A",[198,205,193,174,161,144,136,134,131,115,99,107,108,111,130,130,114,109,105,94,75,66,71,78,73,77,78,71,61,49,58,63,68,62,49,39,36,37,43,27,24,24,15,7,20,23,53,71,79,74,63,47,32,35,40,16,35,34,26,6,15,17,6,6,12,9,19,25,26,31,27,9,15,13,16,23,21,22,31,27,16,5,1,0,9,10,18,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[182,196,192,169,160,162,160,168,155,131,121,126,130,114,110,120,119,136,140,122,101,98,97,100,100,96,97,92,89,101,96,80,87,87,88,78,78,62,71,80,89,75,73,78,62,69,65,67,68,63,57,57,59,47,58,60,57,56,44,65,76,78,79,74,55,50,47,74,76,73,67,62,70,56,64,62,60,56,46,46,48,59,57,46,33,19,19,30,32,25,12,6,11,11,13,15,12,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[184,198,191,169,163,160,157,165,154,133,125,95,109,103,104,121,124,122,120,112,102,96,78,87,95,95,96,87,86,90,85,85,88,88,85,83,84,79,84,77,65,57,53,48,49,51,62,66,69,70,63,62,47,68,68,61,65,53,61,72,74,62,61,65,60,48,34,40,45,56,47,38,41,53,62,64,60,60,70,67,57,48,40,36,39,34,38,39,29,10,10,0,5,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[182,198,193,169,160,160,152,161,148,121,111,83,97,102,99,123,125,120,113,102,99,92,80,74,73,64,74,71,61,76,89,85,77,74,72,76,68,59,67,60,45,42,46,48,33,42,53,52,49,40,52,52,56,59,59,56,59,52,55,67,69,59,57,54,44,48,41,43,41,35,25,30,24,37,54,61,59,65,65,54,36,35,35,34,37,34,39,38,28,20,17,12,13,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[191,201,196,175,172,174,160,160,145,130,122,110,113,118,112,102,100,102,115,118,101,74,66,79,83,82,89,84,66,73,83,87,88,88,88,83,78,70,68,64,55,44,44,44,41,45,46,50,55,57,56,59,57,59,54,47,41,39,35,32,47,42,26,25,29,28,12,25,33,22,29,25,23,18,37,37,25,33,26,10,24,17,2,5,8,7,18,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[193,205,198,172,166,161,144,156,140,120,121,98,100,101,101,113,105,109,109,86,82,71,61,75,76,69,70,66,50,72,81,76,81,79,81,76,69,61,53,56,46,34,33,34,38,33,28,36,46,47,28,29,29,37,43,42,34,23,24,34,35,29,16,21,30,19,21,18,10,1,10,14,13,12,14,18,19,21,22,16,13,3,0,0,6,0,18,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[196,208,208,190,178,176,155,140,127,148,145,133,136,126,140,137,157,155,131,105,87,81,84,80,71,60,66,64,60,63,72,74,76,71,64,63,68,67,62,57,52,40,25,29,24,27,39,50,54,49,46,46,49,47,35,43,44,41,44,41,51,50,46,46,41,37,40,42,45,43,48,48,37,41,39,40,29,44,43,40,28,19,12,4,13,7,14,22,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[193,202,200,180,165,168,144,136,130,151,149,131,125,111,120,121,131,130,124,109,94,84,88,88,78,74,77,78,80,91,89,79,79,69,70,76,70,63,58,47,43,41,36,37,40,46,49,49,57,54,37,33,32,43,53,56,52,50,49,56,62,59,52,43,39,46,51,53,45,37,46,46,43,43,40,42,42,44,49,46,45,41,26,18,14,0,14,19,11,9,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],["Carga B",[185,197,198,188,166,153,139,132,139,149,141,122,117,110,125,132,139,138,123,96,66,64,73,75,69,60,67,68,64,67,66,53,58,55,57,63,66,60,44,48,45,39,45,45,35,24,35,41,48,46,50,42,42,47,53,52,42,42,49,50,53,44,37,38,29,33,30,18,22,37,35,22,21,21,28,15,20,28,32,36,32,31,29,19,4,0,5,8,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]];
+var DATA = {val: []};
 
 var BINDEX = {val: undefined}
 var MODEL = undefined
 
+const histogram = function (arr, min, max, binCnt) {
+  binCnt = binCnt || 4;
+  var first = min;
+  var binWidth = (max - first) / binCnt;
+  var len = arr.length;
+  var bins = [];
+  var i;
+  for (i = 0; i < binCnt; i++)
+    bins[i] = 0;
+  for (i = 0; i < len; i++)
+    bins[Math.min(Math.floor((arr[i] - first) / binWidth), binCnt - 1)] += 1;
+  return bins
+}
+
 var app = new Vue({
   el: '#app',
   data: {
-    waves: [
-      {'name': 'Carga A', isOn: false},
-      {'name': 'Carga B', isOn: false},
-      {'name': 'Carga C', isOn: false}
-    ],
+    loadOn: undefined,
     newName: '',
-    savedStates: DATA,
+    savedStates: window.DATA,
     trainedLabels: undefined,
-    detectedIndex: BINDEX
+    detectedIndex: BINDEX,
+    selHistFeatureIndex: undefined,
+    chart: undefined,
+    type: undefined,// 'audio' 'table'
+    txtData: undefined,
+    dataIn: [],
+    crossValidation: [],
+    loss: undefined
+  },
+  watch: {
+    type (val) {
+      if (val === 'audio') {
+        initAudio()
+      }
+    },
+    selHistFeatureIndex () {
+      this.updateChart()
+    },
+    txtData () {
+      this.savedStates.val = this.parsedTxtData
+      if (this.selHistFeatureIndex) {
+        this.$nextTick(this.updateChart)
+      }
+    }
   },
   methods: {
-    train () {
-      let labels = DATA.reduce((a, c) => {
-        if (a.indexOf(c[0]) === -1) a.push(c[0])
-        return a
-      }, [])
+    updateChart () {
+      this.chart = this.chart || new Chart(this.$refs.hist.getContext('2d'), {
+        type: 'bar',
+        data: {
+          datasets: undefined
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              stacked: true,
+              display: false,
+              barPercentage: 1.0,
+              categoryPercentage: 1.0,
+              gridLines: {
+                //offsetGridLines: true
+              }
+            }, {
+              display: true,
+            }]
+          }
+        }
+      });
+
+      this.chart.canvas.parentNode.style.height = '300px';
+
       
-      this.trainedLabels = labels
-      let tData = labels.map(label => DATA.filter(row => row[0] === label).map(row => row[1]))
-      console.log(tData)
-      window.MODEL = fitBayes(tData)
+      this.chart.data.labels = this.histograms[0].X
+      this.chart.data.datasets = JSON.parse(JSON.stringify(this.histograms))
+      
+      this.chart.update()
+    },
+    removeAudioData (label) {
+      let confirm = window.confirm('Remover item?')
+      if (!confirm) return
+      this.savedStates.val = this.savedStates.val.filter(item => item[0] !== label)
+    },
+    train () {
+      this.trainedLabels = this.labels
+      //console.log(this.tData)
+      window.MODEL = fitBayes(this.tData)
+
+
+      if (this.type === 'table') {
+
+
+
+        this.$nextTick(this.updateChart)
+        window.setTimeout(() => {
+          this.selHistFeatureIndex = 0
+        }, 100)
+
+        
+        // cross validation
+        // faz apenas se tiver uma "quantidade razoável de dados"
+        if (this.parsedTxtData.length < 20) {
+          this.crossValidation = undefined
+          return
+        }
+
+        let parsedData = this.parsedTxtData.slice(1)
+        // shuffle data
+        parsedData = parsedData.map(item => [Math.random(), item])
+          .sort((a, b) => a[0] - b[0])
+          .map(item => item[1])
+
+        let chunkSize = ~~(parsedData.length / 4)
+        var chuks = []
+        for (var i = 0; i < 4; i++) {
+          chuks.push(parsedData.slice(i*chunkSize, (i+1)*chunkSize))
+        }
+        
+        this.crossValidation = chuks.map((test, i) => {
+          let trainChuks = chuks.filter((_, j) => i !== j).reduce((a, c) => a.concat(c), [])
+          
+          // TODO: Este código foi copiado do `tData`. Refatorar
+          let trainData = this.labels.map(label => trainChuks.filter(row => row[0] === label && !!row[1]).map(row => row[1]))
+          
+          let model = fitBayes(trainData)
+
+          let loss = test.map(item => {
+            let res = predictBayes(item[1], model)
+            return this.labels[res] === item[0] ? 0 : 1
+          }).reduce((a, c) => a+c, 0)
+          return [loss, test.length]
+
+        })
+      }
 
     },
     newLoad () {
       if (!this.newName.length) return
-      this.waves.push({'name': this.newName, isOn: false})
+      this.savedStates.val.push([this.newName, undefined])
+      console.log(this.savedStates.val)
       this.newName = ''
+    },
+    loadSampleTable () {
+      this.txtData = `label;comprimento; doçura
+maça;5;6
+maça;4;3
+maça;5;4
+maça;5;2
+maça;5;6
+maça;3;3
+maça;3;1
+maça;3;2.3
+maça;3;5
+maça;5;6
+maça;3;3.6
+maça;4;3
+maça;4;3
+maça;4;2.5
+maça;5;4
+banana;8;7
+banana;5;6
+banana;6;6
+banana;8;7
+banana;5;6
+banana;13;6
+banana;9;7
+banana;8;5
+banana;7;5
+banana;10;7
+banana;9;6
+banana;8;6`
+
     }
   },
   computed: {
+    resultInfer () {
+      if (!this.dataIn.length) return
+      if (this.dataIn.length !== this.features.length) return
+      let dataInFloat = this.dataIn.map(item => parseFloat(item))
+
+      
+      for (var i = 0; i < dataInFloat.length; i++) {
+        if(isNaN(dataInFloat[i])) return
+      }
+
+      let res = predictBayes(dataInFloat, window.MODEL)
+      return this.trainedLabels[res]
+
+    },
+    tData () {
+      //console.log(this.labels)
+      //console.log(this.savedStates.val)
+      return this.labels.map(label => this.savedStates.val.filter(row => row[0] === label && !!row[1]).map(row => row[1]))
+    },
+    splitedTxtData () {
+      return (this.txtData || '')
+        .split('\n') // separa nova linha
+        .filter(item => !!item) // remove linha em branco
+    },
+    parsedTxtData () {
+      return this.splitedTxtData
+        .map((item, i) => item.split(/[\s;]+/) // separa por separador
+        .map((x, j) => {
+          if (i === 0) return x; // primeira linha é o node do feature
+          if (j === 0) return x; // primeiro x é o label
+          return !!x ? parseFloat(x) : 0; // converte para float ou zero
+        })
+      )
+      .map(item => [item[0], item.slice(1)])
+    },
+    labels () {
+      return this.savedStates.val.slice(this.type === 'table' ? 1 : 0).reduce((a, c) => {
+        if (a.indexOf(c[0]) === -1) a.push(c[0])
+        return a
+      }, [])
+    },
     detected () {
+      if (!this.trainedLabels) return
       return this.trainedLabels[this.detectedIndex.val]
+    },
+    histograms () {
+      let datasets = this.tData.map((klass, i) => {
+        return Object({
+          label: this.labels[i],
+          data: klass.map((sample, j) => sample[parseInt(this.selHistFeatureIndex)])
+        })
+      })
+
+      let datasets2 = datasets.map(dataset => {
+        let min = Math.min.apply(0, dataset.data)
+        let max = Math.max.apply(0, dataset.data)
+        
+        return Object({
+          label: dataset.label,
+          max: max,
+          min: min,
+          data: dataset.data
+        })
+      })
+
+      console.log(this.splitedTxtData.length)
+      const min = Math.min.apply(null, datasets2.map(item => item.min))
+      const max = Math.max.apply(null, datasets2.map(item => item.max))
+      // formula empirica para determinar quantidade de bins
+      const nBins = Math.max.apply(null, [Math.min.apply(null, [(~~(this.splitedTxtData.length/4)), 20]), 4])
+      const binWidth = (max - min) / nBins
+      const X = []
+      for (var i = 0; i <= nBins; i++) {
+        X.push(parseFloat((min + (binWidth) * i).toFixed(3)))
+      }
+
+      
+
+      const colors = [
+        'rgba(76,114,176,0.6)',
+        'rgba(221,132,82,0.6)',
+        'rgba(85,168,104,0.6)',
+        'rgba(196,78,82,0.6)',
+        'rgba(129,114,179,0.6)',
+        'rgba(147,120,96,0.6)',
+        'rgba(218,139,195,0.6)',
+        'rgba(140,140,140,0.6)',
+        'rgba(204,185,116,0.6)',
+        'rgba(100,181,205,0.6)'
+      ]
+      return datasets2.map((dataset, i) => {
+        let data = histogram(dataset.data, min, max, nBins)
+        let sum = data.reduce((a, c) => a+c , 0)
+
+        return Object({
+          label: dataset.label,
+          backgroundColor: colors[i],
+          //borderSkipped: 'left',
+          data: data.map(item => item/sum),
+          borderWidth: 1,
+
+          X: X
+        })
+      })
+        
+    },
+    features () {
+      if (!this.tData || !this.tData.length || !this.tData[0].length) return
+      return this.parsedTxtData[0][1]
     }
   },
   mounted () {
-    
+    document.getElementById('app').classList = ''
   }
 })

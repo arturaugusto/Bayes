@@ -6,11 +6,12 @@ As grandes alterações foram:
 * Implementação do algoritmo para detecção do ataque utilizando médias exponenciais
 */
 
-document.body.addEventListener('click', initAudio);
+//document.body.addEventListener('click', initAudio);
 
 
 function initAudio() {
-  document.body.removeEventListener('click', initAudio)
+  
+  //document.body.removeEventListener('click', initAudio)
 
   // Older browsers might not implement mediaDevices at all, so we set an empty object first
   if (navigator.mediaDevices === undefined) {
@@ -120,14 +121,17 @@ function initAudio() {
       var dataArrayAlt2 = Array.from(dataArrayAlt).slice(0, 256)
       
       var lags = dataArrayAlt2.reduce((a, c, i, l) => {
-        //const n = 5
+        const n = 5
+        //a.push(c)
+        //return a
         //if (i >= n) {
         if (i) {
           //a.push(Math.abs((c - l[i-1]) - (l[i-1] - l[i-2]) - (l[i-2] - l[i-3]) - (l[i-3] - l[i-4]) - (l[i-4] - l[i-5]))) / i
           a.push(Math.abs(c - l[i-1]))
+          //a.push(c)
         }
         return a
-      }, dataArrayAlt2)
+      }, [])
 
       // compute exponential average
       fea = fea * (1 - 0.8) + dataArrayAlt.reduce((a, c) => a + c / 2, 0) * 0.8
@@ -151,15 +155,12 @@ function initAudio() {
           atack = true
           //console.log('atack!')
           
-          let wavesOn = app.$data.waves.filter(w => w.isOn)
+          let loadOn = app.$data.loadOn
           
-          if (wavesOn.length) {
-            let label = wavesOn.map(item => item.name).toString()
-            
+          if (loadOn) {
+            DATA.val.push([loadOn, lags])
 
-            DATA.push([label, lags])
-
-            console.log(label)
+            console.log(loadOn)
           } else {
             // Se tem dados treinados, inferir no modelo
             if (window.MODEL) {
@@ -176,7 +177,11 @@ function initAudio() {
       for(var i = 0; i < bufferLengthAlt; i++) {
         barHeight = dataArrayAlt[i];
 
-        canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+        if (fea > sea && startAtack) {
+          canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+        } else {
+          canvasCtx.fillStyle = 'rgb(50,50,' + (barHeight+100) + ')';
+        }
         canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
 
         x += barWidth + 1;
