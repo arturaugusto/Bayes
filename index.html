@@ -11,14 +11,20 @@
     <title></title>
   </head>
   <body>
+
+    <div class="wrapper" style="position: absolute;">
+      <canvas class="visualizer" width="640" height="120"></canvas>
+    </div>
+
+
     <div id="app" class="is-hidden">
       <section class="section">
         <div class="container">
-          <h1 class="title">
+          <h1 class="title" v-bind:class="{'has-text-grey-lighter': type === 'audio'}">
             Classificador Naive Bayes
           </h1>
-          <p class="subtitle is-size-7">
-            <strong>Classificação utilizando Gaussian Naive Bayes</strong>
+          <p class="subtitle is-size-7" v-bind:class="{'has-text-grey-lighter': type === 'audio'}">
+            Classificação utilizando Gaussian Naive Bayes
           </p>
 
 
@@ -49,6 +55,10 @@
           <div v-if="type === 'audio'">
             <div class="">
               <!-- adiciona cargas -->
+
+              <label for="thresh">Threshold</label>
+              <input type="range" name="thresh" min="0" max="255" v-model="audioThreshold">
+              {{audioThreshold}}
               
               <div class="field">
                 <div class="control">
@@ -74,6 +84,12 @@
               
               <div v-if="!labels.length">Nenhuma classe</div>
 
+              <div class="field" v-if="loadOn">
+                <div class="control">
+                  <a class="button is-link is-danger is-small" @click="loadOn = undefined">Parar treinamento</a>
+                </div>
+              </div>
+
               <div class="columns" v-if="labels.length">
                 <div class="column is-narrow is-danger" v-for="(label, i) in labels" v-bind:class="{'notification': trainedLabels && detected === label}">
                   <strong>{{label}}</strong>&nbsp;
@@ -97,11 +113,6 @@
               
             </div>
 
-            <div class="field" v-if="loadOn">
-              <div class="control">
-                <a class="button is-link is-danger is-small" @click="loadOn = undefined">Parar treinamento</a>
-              </div>
-            </div>
             
           </div>
 
@@ -204,10 +215,6 @@ A primeira coluna define a classe dos dados e a primeira linha os "features" de 
         </div>
 
       </section>
-    </div>
-
-    <div class="wrapper">
-      <canvas class="visualizer" width="640" height="100"></canvas>
     </div>
 
   </body>

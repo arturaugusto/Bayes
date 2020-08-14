@@ -34,7 +34,8 @@ var app = new Vue({
     txtData: undefined,
     dataIn: [],
     crossValidation: [],
-    loss: undefined
+    loss: undefined,
+    audioThreshold: 140
   },
   watch: {
     type (val) {

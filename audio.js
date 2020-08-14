@@ -118,14 +118,15 @@ function initAudio() {
       var x = 0;
 
 
-      var dataArrayAlt2 = Array.from(dataArrayAlt).slice(0, 100)
+      const sliceN = 100
+      var dataArrayAlt2 = Array.from(dataArrayAlt).slice(0, sliceN)
       
       var lags = dataArrayAlt2.reduce((a, c, i, l) => {
         //a.push(c)
 
 
-        for (var j = 0; j < 5; j++) {
-          if (i > j) a.push(Math.sqrt(Math.abs(c - l[i - j])))
+        for (var j = 0; j < 50; j++) {
+          if (i > j) a.push(Math.sqrt(Math.pow(c - l[i - j], 2)))
         }
 
         //if (i) {
@@ -137,11 +138,11 @@ function initAudio() {
 
       //lags = lags.sort((a, b) => a-b)
       // compute exponential average
-      fea = fea * (1 - 0.8) + dataArrayAlt.reduce((a, c) => a + c / 2, 0) * 0.8
-      sea = sea * (1 - 0.6) + dataArrayAlt.reduce((a, c) => a + c / 2, 0) * 0.6
+      fea = fea * (1 - 0.7) + dataArrayAlt.reduce((a, c) => a + c, 0)/sliceN * 0.7
+      sea = sea * (1 - 0.3) + dataArrayAlt.reduce((a, c) => a + c, 0)/sliceN * 0.3
       
       // threshold 
-      if (fea > 2500) {
+      if (fea > parseFloat(app.$data.audioThreshold)) {
 
         if (fea > sea) {
           if (!startAtack) {
