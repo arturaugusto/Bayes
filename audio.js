@@ -138,8 +138,8 @@ function initAudio() {
 
       //lags = lags.sort((a, b) => a-b)
       // compute exponential average
-      fea = fea * (1 - 0.7) + dataArrayAlt.reduce((a, c) => a + c, 0)/sliceN * 0.7
-      sea = sea * (1 - 0.3) + dataArrayAlt.reduce((a, c) => a + c, 0)/sliceN * 0.3
+      fea = fea * (1 - 0.7) + dataArrayAlt.reduce((a, c) => c > a ? c : a, 0) * 0.7
+      sea = sea * (1 - 0.3) + dataArrayAlt.reduce((a, c) => c > a ? c : a, 0) * 0.3
       
       // threshold 
       if (fea > parseFloat(app.$data.audioThreshold)) {
