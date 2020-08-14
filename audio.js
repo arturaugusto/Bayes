@@ -118,21 +118,24 @@ function initAudio() {
       var x = 0;
 
 
-      var dataArrayAlt2 = Array.from(dataArrayAlt).slice(0, 256)
+      var dataArrayAlt2 = Array.from(dataArrayAlt).slice(0, 100)
       
       var lags = dataArrayAlt2.reduce((a, c, i, l) => {
-        const n = 5
         //a.push(c)
-        //return a
-        //if (i >= n) {
-        if (i) {
-          //a.push(Math.abs((c - l[i-1]) - (l[i-1] - l[i-2]) - (l[i-2] - l[i-3]) - (l[i-3] - l[i-4]) - (l[i-4] - l[i-5]))) / i
-          a.push(Math.abs(c - l[i-1]))
-          //a.push(c)
-        }
-        return a
-      }, [])
 
+
+        for (var j = 0; j < 5; j++) {
+          if (i > j) a.push(Math.sqrt(Math.abs(c - l[i - j])))
+        }
+
+        //if (i) {
+        //  a.push(Math.abs(c - l[i-1]))
+        //}
+        
+        return a
+      }, dataArrayAlt2)
+
+      //lags = lags.sort((a, b) => a-b)
       // compute exponential average
       fea = fea * (1 - 0.8) + dataArrayAlt.reduce((a, c) => a + c / 2, 0) * 0.8
       sea = sea * (1 - 0.6) + dataArrayAlt.reduce((a, c) => a + c / 2, 0) * 0.6
