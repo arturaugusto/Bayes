@@ -221,7 +221,7 @@ banana;8;6`
     },
     parsedTxtData () {
       return this.splitedTxtData
-        .map((item, i) => item.split(/[\s;]+/) // separa por separador
+        .map((item, i) => item.split(/[\t;]+/) // separa por separador
         .map((x, j) => {
           if (i === 0) return x; // primeira linha é o node do feature
           if (j === 0) return x; // primeiro x é o label
