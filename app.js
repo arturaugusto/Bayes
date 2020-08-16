@@ -226,7 +226,7 @@ banana;8;6`
         .map((x, j) => {
           if (i === 0) return x; // primeira linha é o node do feature
           if (j === 0) return x; // primeiro x é o label
-          return !!x ? parseFloat(x) : 0; // converte para float ou zero
+          return !!x ? parseFloat(x.replace(',','.')) : 0; // converte para float ou zero
         })
       )
       .map(item => [item[0], item.slice(1)])
