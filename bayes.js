@@ -47,7 +47,7 @@ const predictBayes = function(arrIn, model) {
     }, Math.log(groupObj.priorProbability))
     return p
   })
-  //console.log(scores)
+  console.log(scores)
   return argMax(scores)
 }
 
