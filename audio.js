@@ -125,7 +125,7 @@ function initAudio() {
         //a.push(c)
 
 
-        for (var j = 0; j < 100; j++) {
+        for (var j = 0; j < 80; j++) {
           if (i > j) a.push(Math.sqrt(Math.pow(c - l[i - j], 2)))
         }
 
